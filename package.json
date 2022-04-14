@@ -1,0 +1,29 @@
+{
+  "name": "wssio",
+  "version": "1.0.0",
+  "description": "WebSocket Server for Input and Output Data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nextsigner/wssio.git"
+  },
+  "keywords": [
+    "websocket",
+    "server",
+    "data",
+    "connection"
+  ],
+  "author": "nextsigner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nextsigner/wssio/issues"
+  },
+  "homepage": "https://github.com/nextsigner/wssio#readme",
+  "devDependencies": {
+    "http": "0.0.1-security",
+    "websocket": "^1.0.34"
+  }
+}
