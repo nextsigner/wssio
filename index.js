@@ -1,43 +1,47 @@
-var WebSocketServer = require('websocket').server;
-var http = require('http');
+/*
+WebSocketServer.messageType(opcode) - takes an opcode and returns a string value based on the message type - "text" "binary" or "invalid" (other message types are dealt with internally)
+*/
+var WebSocketServer = require("websocketserver");
+var server = new WebSocketServer("all", 1337);
 
-var server = http.createServer(function(request, response) {
-    // process HTTP request. Since we're writing just WebSockets server
-    // we don't have to implement anything.
-});
-server.listen(1337, function() { });
-
-// create the server
-wsServer = new WebSocketServer({
-    httpServer: server
+var connectionList = [];
+server.on("connection", function(id) {
+    connectionList.push(id);
+    console.log("Se ha conectado " + id);
 });
 
-// WebSocket server
-wsServer.on('request', function(request) {
-    var connection = request.accept(null, request.origin);
+server.on("message", function(data, id) {
+    var mes = server.unmaskMessage(data);
+    var str = server.convertToString(mes.message);
+    console.log(str);
+    server.sendMessage('all', JSON.stringify({foo: "baraldsklask"}).replace(/\n/g, ' '), id);
+});
 
-    // This is the most important callback for us, we'll handle
-    // all messages from users here.
-    connection.on('message', function(message) {
-        //console.log('DATA: '+message)
-        if (message.type === 'utf8') {
-            var json=JSON.parse(message.utf8Data)
-            // process WebSocket message
-            try {
-                console.log(JSON.parse(message.utf8Data));
-                connection.sendUTF(JSON.stringify({from: json.from, to: json.to, data: json.data}));
-                console.log("\n\nForm: "+json.from);
-                console.log("To: "+json.to);
-                console.log("Data: "+json.data+'\n\n');
-            } catch (ex) {
-                console.log(ex);
-                //connection.sendUTF(JSON.stringify({from: "wssio", to: "all", data: "error"}));
-            }
-        }
-    });
+//server.on('message', function(data, id) {
+//     var mes = server.unmaskMessage(data);
+//     if (server.messageType(mes.opcode) == "binary") {
+//         var packagedMessage = server.packageMessage(mes.opcode, mes.message);
+//         server.sendMessage('all', packagedMessage);
+//     }
+//});
 
-    connection.on('close', function(connection) {
-        // close user connection
-        console.log('connection closed');
-    });
+server.on("closedconnection", function(id) {
+    console.log("Connection " + id + " has left the server");
+});
+
+server.on('connection', function(id) {
+    server.sendMessage("one", "Welcome to the server!", id);
+});
+
+server.on('message', function(data, id) {
+    var mesObj = server.unmaskMessage(data);
+    console.log(server.convertToString(mesObj.message));
+});
+
+server.on('message', function(data, id) {
+     var mes = server.unmaskMessage(data);
+     if (server.messageType(mes.opcode) == "binary") {
+         var packagedMessage = server.packageMessage(mes.opcode, mes.message);
+         server.sendMessage('all', packagedMessage);
+     }
 });

@@ -24,6 +24,8 @@
   "homepage": "https://github.com/nextsigner/wssio#readme",
   "devDependencies": {
     "http": "0.0.1-security",
-    "websocket": "^1.0.34"
+    "nodemon": "^2.0.15",
+    "websocket": "^1.0.34",
+    "websocketserver": "^1.0.0"
   }
 }
