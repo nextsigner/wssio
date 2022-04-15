@@ -7,7 +7,7 @@ var server = new WebSocketServer("all", 1337);
 var connectionList = [];
 server.on("connection", function(id) {
     connectionList.push(id);
-    console.log("Se ha conectado " + id);
+    console.log("Se ha conectado " + id);    
 });
 
 server.on("message", function(data, id) {
@@ -27,16 +27,19 @@ server.on("message", function(data, id) {
 
 server.on("closedconnection", function(id) {
     console.log("Connection " + id + " has left the server");
+    //connectionList=[]
 });
 
 server.on('connection', function(id) {
-    server.sendMessage("one", "Welcome to the server!", id);
+    //server.sendMessage("all", "Welcome to the server!", id);
+    var packagedMessage = '{from:"wssio", to: "all", data: "adding "'+id+'}'//server.packageMessage(mes.opcode, mes.message);
+    server.sendMessage('all', packagedMessage);
 });
 
-server.on('message', function(data, id) {
-    var mesObj = server.unmaskMessage(data);
-    console.log(server.convertToString(mesObj.message));
-});
+//server.on('message', function(data, id) {
+//    var mesObj = server.unmaskMessage(data);
+//    console.log(server.convertToString(mesObj.message));
+//});
 
 server.on('message', function(data, id) {
      var mes = server.unmaskMessage(data);
